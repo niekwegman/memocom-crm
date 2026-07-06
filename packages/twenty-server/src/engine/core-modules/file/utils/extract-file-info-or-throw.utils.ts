@@ -26,8 +26,21 @@ export const extractFileInfoOrThrow = async ({
 }) => {
   const { ext: declaredExt } = buildFileInfo(filename);
 
-  const { ext: detectedExt, mime: detectedMime } =
-    (await fileTypeParser.fromBuffer(file)) ?? {};
+  // detectPdf parses embedded XML (XFA/XMP) with a strict sax parser that
+  // throws on PDFs with malformed metadata ("Non-whitespace before first
+  // tag"), turning the whole upload into a 500. When that happens, fall back
+  // to plain magic-byte detection for PDFs.
+  let detectedFileType;
+
+  try {
+    detectedFileType = await fileTypeParser.fromBuffer(file);
+  } catch {
+    detectedFileType = file.subarray(0, 5).toString('latin1').startsWith('%PDF')
+      ? { ext: 'pdf' as const, mime: 'application/pdf' as const }
+      : undefined;
+  }
+
+  const { ext: detectedExt, mime: detectedMime } = detectedFileType ?? {};
 
   if (isDefined(detectedExt) && isDefined(detectedMime)) {
     return {
