@@ -102,6 +102,39 @@ upgrades stay auditable. Keep it updated: one section per change, newest first.
   `IS_WORKSPACE_CREATION_LIMITED_TO_SERVER_ADMINS` is unset or explicitly
   `true` in production instead.
 
+### feat(server): DISABLE_PUBLIC_SIGNUP env var to close self-registration
+
+- File: `packages/twenty-server/src/engine/core-modules/twenty-config/config-variables.ts` (new `DISABLE_PUBLIC_SIGNUP` boolean, default false) + `packages/twenty-server/src/engine/core-modules/auth/services/sign-in-up.service.ts` (`signUpWithoutWorkspace`)
+- Problem: `IS_MULTIWORKSPACE_ENABLED=true` is required for our multi-domain
+  (crm.memocom.nl / crm.integrationos.nl) production setup, but `isSignUpEnabled()`
+  is defined as `IS_MULTIWORKSPACE_ENABLED || workspaceCount === 0` — so turning
+  on multiworkspace mode permanently opens public self-signup, with no other
+  toggle to close it in this version (older Twenty had `IS_SIGN_UP_DISABLED`;
+  it's gone).
+- Fix: a new `DISABLE_PUBLIC_SIGNUP` env var checked only in
+  `signUpWithoutWorkspace` (the unauthenticated brand-new-account path) —
+  deliberately NOT in the shared `assertSignUpEnabled`/`assertWorkspaceCreationAllowed`,
+  which also gates an already-authenticated user creating an additional
+  workspace (`signUpInNewWorkspace`) — that legitimate admin flow (e.g. an
+  owner adding a second company's workspace) must keep working even with
+  public registration closed.
+- **Deployment ordering matters**: a fresh instance has zero users, and the
+  very first account created via `signUp` automatically becomes server admin
+  (`hasServerAdmin()` check). Deploy with `DISABLE_PUBLIC_SIGNUP` unset/false,
+  create the real admin account normally, THEN set it to `true` and restart.
+  Setting it `true` from the very first boot would lock out even the deployer.
+- Note: this only closes the password-based signup path. Social auth
+  (Google/Microsoft) has its own account-creation flow and isn't covered —
+  moot for now since our deployment doesn't configure those providers.
+- **Re-applied 2026-09-07:** this patch was silently LOST in the 2.36.0 upstream
+  rebase — FORK.md still documented it while the implementation was gone from
+  `sign-in-up.service.ts` and `config-variables.ts`, leaving public signup open
+  on every multiworkspace deployment from the 2026-08-30 image onward. Upstream
+  had meanwhile renamed `assertSignUpEnabled()` to
+  `assertSignUpWithoutWorkspaceAllowed(email)`; the guard is placed before that
+  call and is otherwise unchanged. **On every future rebase, verify this guard
+  still exists in `signUpWithoutWorkspace` — a passing build does not prove it.**
+
 ### fix(server): don't crash uploads when PDF metadata detection throws
 
 - Commit: `51522dad` (2026-07-06)

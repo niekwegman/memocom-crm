@@ -822,6 +822,20 @@ export class SignInUpService {
       );
     }
 
+    // Blocks brand-new anonymous account creation only. Deliberately narrower
+    // than the assert below, which also gates an already-authenticated user
+    // creating an additional workspace (signUpInNewWorkspace) — that
+    // legitimate admin flow must keep working even when public registration
+    // is closed.
+    if (this.twentyConfigService.get('DISABLE_PUBLIC_SIGNUP')) {
+      throw new AuthException(
+        'Public sign up is disabled on this server',
+        AuthExceptionCode.SIGNUP_DISABLED,
+      );
+    }
+
+    // Upstream renamed assertSignUpEnabled() -> assertSignUpWithoutWorkspaceAllowed(email)
+    // in 2.36; keep the current call, the guard above is additive.
     await this.assertSignUpWithoutWorkspaceAllowed(newUserParams.email);
 
     const shouldGrantServerAdmin = !(await this.hasServerAdmin());

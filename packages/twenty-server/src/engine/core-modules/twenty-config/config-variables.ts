@@ -88,6 +88,15 @@ export class ConfigVariables {
 
   @ConfigVariablesMetadata({
     group: ConfigVariablesGroup.ADVANCED_SETTINGS,
+    description:
+      'Blocks the public signUp mutation entirely, on top of the built-in IS_MULTIWORKSPACE_ENABLED-based gate (which otherwise leaves signup open whenever multiworkspace is on). Existing users can still sign in and be invited to workspaces; only self-registration of new accounts/workspaces is blocked.',
+    type: ConfigVariableType.BOOLEAN,
+  })
+  @IsOptional()
+  DISABLE_PUBLIC_SIGNUP = false;
+
+  @ConfigVariablesMetadata({
+    group: ConfigVariablesGroup.ADVANCED_SETTINGS,
     description: 'Require email verification for user accounts',
     type: ConfigVariableType.BOOLEAN,
   })
