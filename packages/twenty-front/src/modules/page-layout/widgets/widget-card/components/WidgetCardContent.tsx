@@ -29,7 +29,7 @@ const StyledWidgetCardContent = styled.div<WidgetCardContentStyledProps>`
     isFixedHeight ? VERTICAL_LIST_IFRAME_HEIGHT : '0'};
 
   overflow: ${({ isFixedHeight }) =>
-    isFixedHeight ? 'clip' : 'var(--widget-card-content-overflow, hidden)'};
+    isFixedHeight ? 'clip' : 'var(--widget-card-content-overflow, auto)'};
 
   padding-block: ${({ contentPadding, hasHeader, isEditable, variant }) =>
     contentPadding === 'none'
