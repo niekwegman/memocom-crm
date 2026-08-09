@@ -81,6 +81,27 @@ upgrades stay auditable. Keep it updated: one section per change, newest first.
   production, since the surrounding component was rewritten enough that a
   build-clean patch isn't the same as a behavior-verified one.
 
+### ~~feat(server): DISABLE_PUBLIC_SIGNUP env var to close self-registration~~ — dropped 2026-08-27
+
+- Was: a `DISABLE_PUBLIC_SIGNUP` env var gating only `signUpWithoutWorkspace`
+  (the unauthenticated brand-new-account path), deliberately not the
+  authenticated admin-adds-a-workspace path (`signUpInNewWorkspace`).
+- **Dropped on the `twenty/v2.36.0` rebase**: upstream now ships
+  `IS_WORKSPACE_CREATION_LIMITED_TO_SERVER_ADMINS` (default `true`), enforced
+  in `sign-in-up.service.ts` via `assertSignUpWithoutWorkspaceAllowed` /
+  `getSignUpWithoutWorkspaceDecision` — gating the exact same
+  `signUpWithoutWorkspace` call site our patch targeted, and equally not the
+  `signUpInNewWorkspace`/`assertWorkspaceCreationAllowed` path. It's a
+  superset of what we needed: also supports an invitation/approved-access-
+  domain override (`hasProvisionedDestination`) our patch didn't have, and
+  it's restrictive by default (`true`), matching our production intent
+  out of the box with zero env var needed. **Action for deploy**: our old
+  `DISABLE_PUBLIC_SIGNUP=true` env var no longer does anything — remove it
+  from the production compose file's environment block on next deploy (it's
+  inert, not harmful, but stale). Verify
+  `IS_WORKSPACE_CREATION_LIMITED_TO_SERVER_ADMINS` is unset or explicitly
+  `true` in production instead.
+
 ### fix(server): don't crash uploads when PDF metadata detection throws
 
 - Commit: `51522dad` (2026-07-06)
