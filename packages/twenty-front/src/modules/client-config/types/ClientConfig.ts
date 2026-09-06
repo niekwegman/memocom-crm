@@ -13,6 +13,7 @@ import {
 } from '~/generated-metadata/graphql';
 import { type EnterpriseInstanceType } from 'twenty-shared/constants';
 import { type OnboardingConfig } from '@/client-config/types/OnboardingConfig';
+import { type Branding } from '@/client-config/utils/applyBranding';
 
 export type ClientConfig = {
   appVersion?: string;
@@ -40,6 +41,8 @@ export type ClientConfig = {
   isMicrosoftCalendarEnabled: boolean;
   isMicrosoftMessagingEnabled: boolean;
   isMultiWorkspaceEnabled: boolean;
+  // Null unless the deployment sets BRAND_* config — see applyBranding.
+  branding?: Branding | null;
   isImapSmtpCaldavEnabled: boolean;
   isEmailingDomainInDemoMode: boolean;
   isCloudflareIntegrationEnabled: boolean;

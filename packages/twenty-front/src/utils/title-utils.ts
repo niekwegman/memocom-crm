@@ -1,4 +1,5 @@
 import { t } from '@lingui/core/macro';
+import { getBrandName } from '@/client-config/utils/applyBranding';
 import { AppBasePath, AppPath, SettingsPath } from 'twenty-shared/types';
 
 enum SettingsPathPrefixes {
@@ -63,6 +64,6 @@ export const getPageTitleFromPath = (pathname: string): string => {
     case SettingsPathPrefixes.Community:
       return t`Community - Settings`;
     default:
-      return 'Memocom CRM';
+      return getBrandName();
   }
 };
