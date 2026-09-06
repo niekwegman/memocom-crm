@@ -295,8 +295,10 @@ export class ClientConfig {
   @Field(() => Boolean)
   isMultiWorkspaceEnabled: boolean;
 
+  // Optional, not just nullable: an unbranded deployment simply omits it, and
+  // every existing ClientConfig constructor stays valid without change.
   @Field(() => Branding, { nullable: true })
-  branding: Branding | null;
+  branding?: Branding | null;
 
   @Field(() => Boolean)
   isEmailVerificationRequired: boolean;
