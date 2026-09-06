@@ -257,6 +257,24 @@ export class ClientConfigMaintenanceMode {
   link?: string;
 }
 
+// Per-deployment branding. Null when the deployment sets no BRAND_* config,
+// which means "use the built-in branding" — every client CRM shares one image,
+// so this is how one build serves several visual identities.
+@ObjectType()
+class Branding {
+  @Field(() => String, { nullable: true })
+  name: string | null;
+
+  @Field(() => String, { nullable: true })
+  accent: string | null;
+
+  @Field(() => String, { nullable: true })
+  accentAlt: string | null;
+
+  @Field(() => String, { nullable: true })
+  logoUrl: string | null;
+}
+
 @ObjectType()
 export class ClientConfig {
   @Field(() => String, { nullable: true })
@@ -276,6 +294,9 @@ export class ClientConfig {
 
   @Field(() => Boolean)
   isMultiWorkspaceEnabled: boolean;
+
+  @Field(() => Branding, { nullable: true })
+  branding: Branding | null;
 
   @Field(() => Boolean)
   isEmailVerificationRequired: boolean;

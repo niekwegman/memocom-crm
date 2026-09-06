@@ -1,4 +1,5 @@
 import { useClientConfig } from '@/client-config/hooks/useClientConfig';
+import { applyBranding } from '@/client-config/utils/applyBranding';
 import { clientConfigApiStatusState } from '@/client-config/states/clientConfigApiStatusState';
 import { useAtomState } from '@/ui/utilities/state/jotai/hooks/useAtomState';
 import { useEffect } from 'react';
@@ -39,6 +40,10 @@ export const ClientConfigProviderEffect = () => {
     if (!isDefined(data?.clientConfig)) {
       return;
     }
+
+    // Per-deployment branding: applied as soon as config lands, before the
+    // app renders anything the user would notice re-colouring.
+    applyBranding(data?.clientConfig?.branding);
   }, [data?.clientConfig, error, loading, setClientConfigApiStatus]);
 
   return <></>;

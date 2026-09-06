@@ -1897,6 +1897,55 @@ export class ConfigVariables {
   @IsOptional()
   IS_MULTIWORKSPACE_ENABLED = false;
 
+  // ---------------------------------------------------------------------
+  // Per-deployment branding.
+  //
+  // All client CRMs run the SAME image, so branding cannot be baked in at
+  // build time without rebranding every client at once. These are read at
+  // runtime, published through /client-config, and applied by the frontend
+  // as CSS custom properties — which is why one image can serve OptiFin in
+  // navy/orange and Memocom in its own colours.
+  //
+  // Unset means "keep the built-in Memocom branding", so adding these is a
+  // no-op for any deployment that does not set them.
+  // ---------------------------------------------------------------------
+
+  @ConfigVariablesMetadata({
+    group: ConfigVariablesGroup.SERVER_CONFIG,
+    description:
+      'Product name shown in the browser tab, auth pages and emails. Defaults to the built-in branding when unset.',
+    type: ConfigVariableType.STRING,
+  })
+  @IsOptional()
+  BRAND_NAME?: string;
+
+  @ConfigVariablesMetadata({
+    group: ConfigVariablesGroup.SERVER_CONFIG,
+    description:
+      'Primary brand colour as a hex value (e.g. #0B2C5F). Overrides the accent ramp in both light and dark themes.',
+    type: ConfigVariableType.STRING,
+  })
+  @IsOptional()
+  BRAND_ACCENT?: string;
+
+  @ConfigVariablesMetadata({
+    group: ConfigVariablesGroup.SERVER_CONFIG,
+    description:
+      'Secondary/highlight brand colour as a hex value (e.g. #F36F21). Used for the strongest accent surfaces.',
+    type: ConfigVariableType.STRING,
+  })
+  @IsOptional()
+  BRAND_ACCENT_ALT?: string;
+
+  @ConfigVariablesMetadata({
+    group: ConfigVariablesGroup.SERVER_CONFIG,
+    description:
+      'Absolute or relative URL of the logo shown on the sign-in page and as the favicon.',
+    type: ConfigVariableType.STRING,
+  })
+  @IsOptional()
+  BRAND_LOGO_URL?: string;
+
   @ConfigVariablesMetadata({
     group: ConfigVariablesGroup.ADVANCED_SETTINGS,
     description:

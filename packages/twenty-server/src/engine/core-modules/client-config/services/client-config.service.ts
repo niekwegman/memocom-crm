@@ -202,6 +202,7 @@ export class ClientConfigService {
       isMultiWorkspaceEnabled: this.twentyConfigService.get(
         'IS_MULTIWORKSPACE_ENABLED',
       ),
+      branding: this.getBranding(),
       isEmailVerificationRequired: this.twentyConfigService.get(
         'IS_EMAIL_VERIFICATION_REQUIRED',
       ),
@@ -320,5 +321,25 @@ export class ClientConfigService {
     }
 
     return clientConfig;
+  }
+
+  // Returns null unless the deployment actually sets branding, so an
+  // unbranded deployment keeps the built-in identity untouched.
+  private getBranding() {
+    const name = this.twentyConfigService.get('BRAND_NAME');
+    const accent = this.twentyConfigService.get('BRAND_ACCENT');
+    const accentAlt = this.twentyConfigService.get('BRAND_ACCENT_ALT');
+    const logoUrl = this.twentyConfigService.get('BRAND_LOGO_URL');
+
+    if (!name && !accent && !accentAlt && !logoUrl) {
+      return null;
+    }
+
+    return {
+      name: name ?? null,
+      accent: accent ?? null,
+      accentAlt: accentAlt ?? null,
+      logoUrl: logoUrl ?? null,
+    };
   }
 }
