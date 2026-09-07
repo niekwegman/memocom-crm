@@ -177,6 +177,7 @@ upgrades stay auditable. Keep it updated: one section per change, newest first.
      object at mount and never re-reads the variables.
   2. `--t-accent-*` alone changes nothing visible; `--t-color-blue` is what
      recolours interactive elements.
+
 ### feat: dark navigation chrome via BRAND_NAV_BACKGROUND
 
 - Commits: `8dea57df67`, `4452d8df62`, `d64faf4039` (2026-09-07)
