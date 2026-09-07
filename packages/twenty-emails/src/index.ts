@@ -21,3 +21,4 @@ export * from './emails/two-factor-authentication-reset.email';
 export * from './emails/validate-approved-access-domain.email';
 export * from './emails/warn-suspended-workspace.email';
 export * from './utils/email-renderer/email-renderer';
+export * from './utils/brand';

@@ -5,6 +5,7 @@ import { MainText } from 'src/components/MainText';
 import { Title } from 'src/components/Title';
 import { createI18nInstance } from 'src/utils/i18n.utils';
 import { type APP_LOCALES } from 'twenty-shared/translations';
+import { getEmailBrandName } from '../utils/brand';
 
 type PasswordUpdateNotifyEmailProps = {
   userName: string;
@@ -43,7 +44,7 @@ export const PasswordUpdateNotifyEmail = ({
         <br />
       </MainText>
       <br />
-      <CallToAction value={i18n._('Connect to Memocom CRM')} href={link} />
+      <CallToAction value={i18n._('Connect to {brandName}', { brandName: getEmailBrandName() })} href={link} />
       <br />
       <br />
     </BaseEmail>

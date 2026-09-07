@@ -17,8 +17,13 @@ export type Branding = {
   name?: string | null;
   accent?: string | null;
   accentAlt?: string | null;
-  logoUrl?: string | null;
 };
+
+// Note: there is deliberately no logo/favicon setting here. The favicon and
+// the sign-in logo already come from the WORKSPACE logo (see PageFavicon and
+// SignInUpStandardContent) — per-workspace, editable in the UI, no redeploy.
+// Setting it from here too would give one <link rel="icon"> two owners, with
+// Helmet and this code overwriting each other depending on render order.
 
 const HEX = /^#([0-9a-f]{3}|[0-9a-f]{6})$/i;
 
@@ -118,25 +123,5 @@ export const applyBranding = (branding: Branding | null | undefined): void => {
     root.style.setProperty('--t-brand-accent-alt', accentAlt);
   }
 
-  if (branding.logoUrl) {
-    applyFavicon(branding.logoUrl);
-  }
 };
 
-const applyFavicon = (href: string): void => {
-  const existing = document.querySelectorAll<HTMLLinkElement>(
-    'link[rel~="icon"], link[rel="shortcut icon"], link[rel="apple-touch-icon"]',
-  );
-
-  if (existing.length === 0) {
-    const link = document.createElement('link');
-    link.rel = 'icon';
-    link.href = href;
-    document.head.appendChild(link);
-    return;
-  }
-
-  existing.forEach((link) => {
-    link.href = href;
-  });
-};

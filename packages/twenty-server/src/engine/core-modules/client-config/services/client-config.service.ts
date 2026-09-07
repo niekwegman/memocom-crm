@@ -356,9 +356,8 @@ export class ClientConfigService {
     const name = this.twentyConfigService.get('BRAND_NAME');
     const accent = this.twentyConfigService.get('BRAND_ACCENT');
     const accentAlt = this.twentyConfigService.get('BRAND_ACCENT_ALT');
-    const logoUrl = this.twentyConfigService.get('BRAND_LOGO_URL');
 
-    if (!name && !accent && !accentAlt && !logoUrl) {
+    if (!name && !accent && !accentAlt) {
       return null;
     }
 
@@ -366,7 +365,6 @@ export class ClientConfigService {
       name: name ?? null,
       accent: accent ?? null,
       accentAlt: accentAlt ?? null,
-      logoUrl: logoUrl ?? null,
     };
   }
 }

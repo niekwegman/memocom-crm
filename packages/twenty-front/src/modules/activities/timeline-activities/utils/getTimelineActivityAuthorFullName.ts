@@ -1,5 +1,6 @@
 import { t } from '@lingui/core/macro';
 import { type TimelineActivity } from '@/activities/timeline-activities/types/TimelineActivity';
+import { getBrandName } from '@/client-config/utils/applyBranding';
 import { type CurrentWorkspaceMember } from '@/auth/states/currentWorkspaceMemberState';
 import { isDefined } from 'twenty-shared/utils';
 
@@ -12,5 +13,5 @@ export const getTimelineActivityAuthorFullName = (
       ? t`You`
       : `${event.workspaceMember?.name.firstName} ${event.workspaceMember?.name.lastName}`;
   }
-  return 'Memocom CRM';
+  return getBrandName();
 };

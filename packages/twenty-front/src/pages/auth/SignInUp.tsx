@@ -1,5 +1,6 @@
 import { StyledAuthContent } from '@/auth/components/StyledAuthContent';
 import { useSignInUp } from '@/auth/sign-in-up/hooks/useSignInUp';
+import { getBrandName } from '@/client-config/utils/applyBranding';
 import { useSignInUpForm } from '@/auth/sign-in-up/hooks/useSignInUpForm';
 import { isCreatingWorkspaceState } from '@/auth/states/isCreatingWorkspaceState';
 import {
@@ -122,7 +123,7 @@ export const SignInUp = () => {
     }
 
     if (isGlobalScope) {
-      return t`Welcome to Memocom CRM`;
+      return t`Welcome to ${getBrandName()}`;
     }
 
     const workspaceName = workspacePublicData?.displayName;

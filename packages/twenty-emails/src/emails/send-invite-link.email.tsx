@@ -14,6 +14,7 @@ import { capitalize } from 'src/utils/capitalize';
 import { createI18nInstance } from 'src/utils/i18n.utils';
 import { type APP_LOCALES } from 'twenty-shared/translations';
 import { getImageAbsoluteURI } from 'twenty-shared/utils';
+import { getEmailBrandName } from '../utils/brand';
 
 type SendInviteLinkEmailProps = {
   link: string;
@@ -45,7 +46,7 @@ export const SendInviteLinkEmail = ({
 
   return (
     <BaseEmail width={333} locale={locale}>
-      <Title value={i18n._('Join your team on Memocom CRM')} />
+      <Title value={i18n._('Join your team on {brandName}', { brandName: getEmailBrandName() })} />
       <MainText>
         <Trans
           id="{senderName} (<0>{senderEmail}</0>) has invited you to join a workspace called <1>{workspaceName}</1>."

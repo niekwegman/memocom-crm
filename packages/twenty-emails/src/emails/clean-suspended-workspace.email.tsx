@@ -5,6 +5,7 @@ import { MainText } from 'src/components/MainText';
 import { Title } from 'src/components/Title';
 import { createI18nInstance } from 'src/utils/i18n.utils';
 import { type APP_LOCALES } from 'twenty-shared/translations';
+import { getEmailBrandName } from '../utils/brand';
 
 type CleanSuspendedWorkspaceEmailProps = {
   daysSinceInactive: number;
@@ -42,7 +43,7 @@ export const CleanSuspendedWorkspaceEmail = ({
         <Trans id="Its data has been removed and can no longer be recovered." />
         <br />
         <br />
-        <Trans id="If you'd ever like to give Memocom CRM another try, you can start a fresh workspace in minutes — we'd love to have you back." />
+        <Trans id="If you'd ever like to give {brandName} another try, you can start a fresh workspace in minutes — we'd love to have you back." values={{ brandName: getEmailBrandName() }} />
       </MainText>
       <br />
       <CallToAction
