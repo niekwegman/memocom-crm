@@ -2426,6 +2426,15 @@ export class ConfigVariables {
   @IsOptional()
   BRAND_ACCENT_ALT?: string;
 
+  @ConfigVariablesMetadata({
+    group: ConfigVariablesGroup.SERVER_CONFIG,
+    description:
+      'Background colour (hex) for the navigation sidebar and page header. Unset keeps the standard light chrome.',
+    type: ConfigVariableType.STRING,
+  })
+  @IsOptional()
+  BRAND_NAV_BACKGROUND?: string;
+
 
   @ConfigVariablesMetadata({
     group: ConfigVariablesGroup.ADVANCED_SETTINGS,

@@ -17,6 +17,7 @@ export type Branding = {
   name?: string | null;
   accent?: string | null;
   accentAlt?: string | null;
+  navBackground?: string | null;
 };
 
 // Note: there is deliberately no logo/favicon setting here. The favicon and
@@ -131,6 +132,18 @@ export const applyBranding = (branding: Branding | null | undefined): void => {
       '--t-background-transparent-blue',
       `rgba(${r}, ${g}, ${b}, 0.12)`,
     );
+  }
+
+  // Dark navigation chrome: sets a variable and a root class; the actual
+  // restyling lives in brand-nav.css as LOCAL token overrides scoped to the
+  // sidebar and page-header containers — components keep reading their own
+  // design tokens, we only redefine what those tokens mean inside the navy
+  // regions. No component fights, and unset config keeps the light chrome.
+  const navBackground = branding.navBackground?.trim();
+
+  if (navBackground && HEX.test(navBackground)) {
+    root.style.setProperty('--t-brand-nav-bg', navBackground);
+    root.classList.add('brand-nav');
   }
 
   if (accentAlt && HEX.test(accentAlt)) {

@@ -1,0 +1,58 @@
+/* Dark navigation chrome for branded deployments (BRAND_NAV_BACKGROUND).
+ *
+ * Activated by applyBranding adding `.brand-nav` on <html> and setting
+ * --t-brand-nav-bg. Everything below is LOCAL design-token overrides scoped
+ * to the sidebar / page-header containers: components inside keep reading
+ * their usual tokens (font-color-primary, background-transparent-light, ...)
+ * and simply get dark-appropriate values there. Content area is untouched.
+ */
+
+.brand-nav .brand-nav-sidebar,
+.brand-nav .brand-nav-topbar {
+  --t-font-color-primary: rgba(255, 255, 255, 0.95);
+  --t-font-color-secondary: rgba(255, 255, 255, 0.78);
+  --t-font-color-tertiary: rgba(255, 255, 255, 0.6);
+  --t-font-color-light: rgba(255, 255, 255, 0.55);
+  --t-font-color-inverted: var(--t-brand-nav-bg);
+  --t-background-transparent-light: rgba(255, 255, 255, 0.1);
+  --t-background-transparent-lighter: rgba(255, 255, 255, 0.06);
+  --t-background-transparent-medium: rgba(255, 255, 255, 0.16);
+  --t-background-transparent-strong: rgba(255, 255, 255, 0.24);
+  --t-border-color-light: rgba(255, 255, 255, 0.12);
+  --t-border-color-medium: rgba(255, 255, 255, 0.18);
+  --t-border-color-strong: rgba(255, 255, 255, 0.28);
+
+  background: var(--t-brand-nav-bg);
+  color: var(--t-font-color-primary);
+}
+
+.brand-nav .brand-nav-topbar {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+/* Icons that use currentColor pick the light text up automatically; nav-item
+ * icons with explicit record colours (blue/red/teal per item) keep their
+ * colour and read well on navy. */
+.brand-nav .brand-nav-sidebar svg,
+.brand-nav .brand-nav-topbar svg {
+  color: var(--t-font-color-secondary);
+}
+
+/* The workspace logo, significantly more prominent. */
+.brand-nav .brand-nav-sidebar [data-testid='workspace-dropdown'] img,
+.brand-nav .brand-nav-sidebar [data-testid='workspace-dropdown'] > div:first-child {
+  height: 30px !important;
+  width: 30px !important;
+  font-size: 18px;
+}
+
+.brand-nav .brand-nav-sidebar [data-testid='workspace-dropdown'] {
+  gap: 10px;
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+
+.brand-nav .brand-nav-sidebar [data-testid='workspace-dropdown'] span {
+  font-size: 15px;
+  font-weight: 600;
+}
