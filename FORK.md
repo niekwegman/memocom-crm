@@ -152,6 +152,37 @@ upgrades stay auditable. Keep it updated: one section per change, newest first.
 - Upstream status: **bug exists in stock Twenty ≤ 2.18.5; candidate PR to
   twentyhq/twenty.** Drop this patch once upstream ships an equivalent fix.
 
+### feat: per-deployment branding via BRAND_* config variables
+
+- Commits: `2e207a2b63`, `81d9d9d9d0`, `c57aa8d5d5`, `d68bd71c12`, `36de93f91d` (2026-09-07)
+- Every client CRM runs the same image, so branding is a runtime concern:
+  `BRAND_NAME`, `BRAND_ACCENT`, `BRAND_ACCENT_ALT` (server env vars, per Coolify
+  service) flow through `/client-config` and are applied by the frontend as CSS
+  custom properties. Unset = built-in Memocom branding, so this is a no-op for
+  deployments that don't opt in. First consumer: OptiFin
+  (`BRAND_NAME=OptiFin`, accent `#F36F21`, alt `#0B2C5F`).
+- Covers: accent tokens AND the palette alias `--t-color-blue` (checkboxes,
+  radios, buttons, links — the blue people actually see; accent tokens alone
+  are invisible), tab title, sign-in welcome/footer text, timeline system
+  author, and the six product-name strings in transactional emails (seeded at
+  server bootstrap via `setEmailBrandName`, since emails render server-side).
+  Deliberately NOT covered: the blue1..12 ramp and `--t-tag-*` tokens (record
+  colours a user picked as "blue" keep meaning blue), and the favicon/sidebar
+  logo (already per-workspace via the workspace logo — a BRAND_LOGO_URL was
+  added and removed again: it fought PageFavicon/Helmet for the same
+  <link rel="icon">).
+- Two hard-won implementation facts, do not undo:
+  1. Branding must apply BEFORE first render (entry-point fetch in
+     `index.tsx`): the theme provider snapshots getComputedStyle into a JS
+     object at mount and never re-reads the variables.
+  2. `--t-accent-*` alone changes nothing visible; `--t-color-blue` is what
+     recolours interactive elements.
+- Known gap: the sign-in page's PRIMARY logo is still the baked-in Memocom
+  "m" asset (from the rebrand commit below); a branded deployment shows its
+  workspace logo only as the small secondary badge. Swap requires making that
+  asset config-driven — deliberately not done yet (accepted for OptiFin
+  go-live, Sep 2026).
+
 ### rebrand: rename Twenty to Memocom CRM
 
 - Commit: `51f85c84` (originally authored 2026-06-16, re-rebased on upgrades)
