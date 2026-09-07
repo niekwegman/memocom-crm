@@ -44,7 +44,7 @@ const expand = (hex: string): string =>
     ? `#${hex[1]}${hex[1]}${hex[2]}${hex[2]}${hex[3]}${hex[3]}`
     : hex;
 
-const rgb = (hex: string): [number, number, number] => {
+const rgbOf = (hex: string): [number, number, number] => {
   const h = expand(hex);
   return [
     parseInt(h.slice(1, 3), 16),
@@ -55,14 +55,14 @@ const rgb = (hex: string): [number, number, number] => {
 
 /** Mix towards white (amount 0..1) — used to build the lighter accent steps. */
 const tint = (hex: string, amount: number): string => {
-  const [r, g, b] = rgb(hex);
+  const [r, g, b] = rgbOf(hex);
   const mix = (c: number) => Math.round(c + (255 - c) * amount);
   return `rgb(${mix(r)}, ${mix(g)}, ${mix(b)})`;
 };
 
 /** Mix towards black — used for the darker end in the dark scheme. */
 const shade = (hex: string, amount: number): string => {
-  const [r, g, b] = rgb(hex);
+  const [r, g, b] = rgbOf(hex);
   const mix = (c: number) => Math.round(c * (1 - amount));
   return `rgb(${mix(r)}, ${mix(g)}, ${mix(b)})`;
 };
@@ -115,6 +115,22 @@ export const applyBranding = (branding: Branding | null | undefined): void => {
     for (const [name, value] of Object.entries(steps)) {
       root.style.setProperty(name, value);
     }
+
+    // The accent tokens only colour soft surfaces. The blue people actually
+    // SEE — checked checkboxes, radios, primary/light buttons, links, the
+    // selected-nav border — is the palette alias `--t-color-blue`, used by
+    // twenty-ui's component styles directly. Override the alias (and its
+    // transparent hover companion) but NOT the blue1..12 ramp or the
+    // `--t-tag-*` tokens, so record tags and colour ramps a user picked as
+    // "blue" keep meaning blue. Known cosmetic trade-off: nav-item icons
+    // explicitly configured with color 'blue' follow the brand too.
+    const [r, g, b] = rgbOf(accent);
+
+    root.style.setProperty('--t-color-blue', accent);
+    root.style.setProperty(
+      '--t-background-transparent-blue',
+      `rgba(${r}, ${g}, ${b}, 0.12)`,
+    );
   }
 
   if (accentAlt && HEX.test(accentAlt)) {
