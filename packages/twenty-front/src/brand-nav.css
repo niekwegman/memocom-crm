@@ -3,8 +3,12 @@
  * Activated by applyBranding adding `.brand-nav` on <html> and setting
  * --t-brand-nav-bg. Everything below is LOCAL design-token overrides scoped
  * to the sidebar / page-header containers: components inside keep reading
- * their usual tokens (font-color-primary, background-transparent-light, ...)
- * and simply get dark-appropriate values there. Content area is untouched.
+ * their usual tokens (font-color-primary, background-secondary, ...) and
+ * simply get dark-appropriate values there. Content area is untouched.
+ *
+ * Colours are expressed as translucent white over the brand ground rather
+ * than fixed hexes, so this works for any BRAND_NAV_BACKGROUND, not just
+ * OptiFin's navy.
  */
 
 .brand-nav .brand-nav-sidebar,
@@ -14,6 +18,16 @@
   --t-font-color-tertiary: rgba(255, 255, 255, 0.6);
   --t-font-color-light: rgba(255, 255, 255, 0.55);
   --t-font-color-inverted: var(--t-brand-nav-bg);
+
+  /* Surfaces. A component that paints itself with a "background" token inside
+   * the navy region must come out as a lighter navy, never as a white card —
+   * the tab pill and the New-chat button both use background.secondary, and
+   * without these they render white-on-white against the font colours above. */
+  --t-background-primary: transparent;
+  --t-background-secondary: rgba(255, 255, 255, 0.1);
+  --t-background-tertiary: rgba(255, 255, 255, 0.16);
+  --t-background-quaternary: rgba(255, 255, 255, 0.22);
+
   --t-background-transparent-light: rgba(255, 255, 255, 0.1);
   --t-background-transparent-lighter: rgba(255, 255, 255, 0.06);
   --t-background-transparent-medium: rgba(255, 255, 255, 0.16);
@@ -30,12 +44,33 @@
   border-bottom: 1px solid rgba(255, 255, 255, 0.14);
 }
 
-/* Icons that use currentColor pick the light text up automatically; nav-item
- * icons with explicit record colours (blue/red/teal per item) keep their
- * colour and read well on navy. */
+/* Icons that inherit currentColor follow the font tokens above on their own. */
 .brand-nav .brand-nav-sidebar svg,
 .brand-nav .brand-nav-topbar svg {
   color: var(--t-font-color-secondary);
+}
+
+/* The Home/Chat tab icons are the exception: they receive their colour as a
+ * JS prop read from the theme object, which is snapshotted from :root and so
+ * never sees these scoped variables — they'd stay dark grey on navy. Tabler
+ * renders that prop as a `stroke` presentation attribute, which any CSS
+ * declaration outranks, so restating stroke here is enough. Scoped to the
+ * tablist so record-coloured nav icons keep their own hues. */
+.brand-nav .brand-nav-sidebar [role='tablist'] svg {
+  stroke: var(--t-font-color-tertiary);
+}
+
+.brand-nav .brand-nav-sidebar [role='tablist'] [aria-selected='true'] svg {
+  stroke: var(--t-font-color-primary);
+}
+
+/* Nav items with a record colour render their icon on a TintedIconTile whose
+ * tint is computed for a light sidebar — on navy those read as bright blobs.
+ * The tile sets its colours as inline custom properties, so an !important
+ * author rule is what reaches them; the icon keeps its own hue on top. */
+.brand-nav .brand-nav-sidebar div[style*='--tinted-icon-tile-background-color'] {
+  --tinted-icon-tile-background-color: rgba(255, 255, 255, 0.14) !important;
+  --tinted-icon-tile-border: 1px solid rgba(255, 255, 255, 0.18) !important;
 }
 
 /* The workspace logo, significantly more prominent. */
