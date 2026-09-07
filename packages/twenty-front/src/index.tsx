@@ -17,6 +17,7 @@ import 'twenty-ui/style.css';
 import 'twenty-ui/theme-light.css';
 import 'twenty-ui/theme-dark.css';
 import './index.css';
+import './brand-nav.css';
 
 // TODO: REMOVE this after 2026-12-12 — temporary migration of tokenPair from the
 // legacy cookie to localStorage (legacy cookie has a 180-day expiry).

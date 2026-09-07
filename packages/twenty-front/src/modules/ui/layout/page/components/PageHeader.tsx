@@ -108,7 +108,10 @@ export const PageHeader = ({
 
   return (
     <AnimatePresence initial={false}>
-      <StyledTopBarContainer className={className} isMobile={isMobile}>
+      <StyledTopBarContainer
+        className={`brand-nav-topbar ${className ?? ''}`}
+        isMobile={isMobile}
+      >
         <StyledLeftContainer>
           {!isNavigationDrawerExpanded && (!isMobile || isSettingsPage) && (
             <NavigationDrawerCollapseButton direction="right" />

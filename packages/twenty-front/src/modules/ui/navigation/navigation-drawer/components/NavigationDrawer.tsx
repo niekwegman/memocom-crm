@@ -116,6 +116,7 @@ export const NavigationDrawer = ({
     <>
       <NavigationDrawerWidthEffect />
       <StyledAnimatedContainer
+      className="brand-nav-sidebar"
         className={className}
         data-click-outside-id={NAVIGATION_DRAWER_CLICK_OUTSIDE_ID}
         isExpanded={isExpanded}
