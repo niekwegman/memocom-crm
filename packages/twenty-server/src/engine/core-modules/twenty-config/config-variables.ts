@@ -1946,14 +1946,6 @@ export class ConfigVariables {
   @IsOptional()
   BRAND_ACCENT_ALT?: string;
 
-  @ConfigVariablesMetadata({
-    group: ConfigVariablesGroup.SERVER_CONFIG,
-    description:
-      'Absolute or relative URL of the logo shown on the sign-in page and as the favicon.',
-    type: ConfigVariableType.STRING,
-  })
-  @IsOptional()
-  BRAND_LOGO_URL?: string;
 
   @ConfigVariablesMetadata({
     group: ConfigVariablesGroup.ADVANCED_SETTINGS,

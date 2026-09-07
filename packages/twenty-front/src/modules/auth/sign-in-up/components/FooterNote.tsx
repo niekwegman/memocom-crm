@@ -1,4 +1,5 @@
 import { styled } from '@linaria/react';
+import { getBrandName } from '@/client-config/utils/applyBranding';
 import { Trans } from '@lingui/react/macro';
 
 import { useWorkspaceBypass } from '@/auth/sign-in-up/hooks/useWorkspaceBypass';
@@ -71,7 +72,7 @@ export const FooterNote = ({
   if (!isOnAWorkspace) {
     return (
       <StyledCopyContainer>
-        <Trans>By using Memocom CRM, you agree to the</Trans>{' '}
+        <Trans>By using {getBrandName()}, you agree to the</Trans>{' '}
         <a
           href="https://twenty.com/legal/terms"
           target="_blank"

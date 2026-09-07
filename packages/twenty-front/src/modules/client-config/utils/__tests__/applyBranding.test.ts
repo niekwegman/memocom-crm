@@ -75,22 +75,5 @@ describe('applyBranding', () => {
     expect(document.title).toBe('Prospects - OptiFin');
   });
 
-  it('points the favicon at the brand logo', () => {
-    const link = document.createElement('link');
-    link.rel = 'icon';
-    link.href = '/old.png';
-    document.head.appendChild(link);
 
-    applyBranding({ logoUrl: '/optifin.png' });
-
-    expect(
-      document.querySelector<HTMLLinkElement>('link[rel~="icon"]')?.href,
-    ).toContain('/optifin.png');
-  });
-
-  it('adds a favicon link when the document has none', () => {
-    applyBranding({ logoUrl: '/optifin.png' });
-
-    expect(document.querySelectorAll('link[rel~="icon"]')).toHaveLength(1);
-  });
 });

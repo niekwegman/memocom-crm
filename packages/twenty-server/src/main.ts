@@ -21,6 +21,8 @@ import { configTransformers } from 'src/engine/core-modules/twenty-config/utils/
 import { applyCredentialedCors } from 'src/engine/core-modules/user-session/utils/apply-credentialed-cors.util';
 import { shouldCaptureException } from 'src/engine/utils/global-exception-handler.util';
 
+import { setEmailBrandName } from 'twenty-emails';
+
 import { AppModule } from './app.module';
 import './instrument';
 
@@ -47,6 +49,11 @@ const bootstrap = async () => {
   });
   const logger = app.get(LoggerService);
   const twentyConfigService = app.get(TwentyConfigService);
+
+  // Transactional emails are rendered server-side and cannot use the
+  // frontend's branding, so the product name is seeded once here from config.
+  // Unset BRAND_NAME keeps the built-in name.
+  setEmailBrandName(twentyConfigService.get('BRAND_NAME'));
   const exceptionHandlerService = app.get(ExceptionHandlerService);
 
   process.on('unhandledRejection', (reason) => {

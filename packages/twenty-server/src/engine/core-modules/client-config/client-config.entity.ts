@@ -271,8 +271,6 @@ class Branding {
   @Field(() => String, { nullable: true })
   accentAlt: string | null;
 
-  @Field(() => String, { nullable: true })
-  logoUrl: string | null;
 }
 
 @ObjectType()

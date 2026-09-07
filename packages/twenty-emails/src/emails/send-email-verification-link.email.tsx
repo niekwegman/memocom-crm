@@ -5,6 +5,7 @@ import { MainText } from 'src/components/MainText';
 import { Title } from 'src/components/Title';
 import { createI18nInstance } from 'src/utils/i18n.utils';
 import { type APP_LOCALES } from 'twenty-shared/translations';
+import { getEmailBrandName } from '../utils/brand';
 
 type SendEmailVerificationLinkEmailProps = {
   link: string;
@@ -22,8 +23,8 @@ export const SendEmailVerificationLinkEmail = ({
     ? i18n._('Confirm your new email address')
     : i18n._('Confirm your email address');
   const bodyId = isEmailUpdate
-    ? 'We received a request to change the email address associated with your Memocom CRM account. Click below to confirm this change.'
-    : 'Thanks for registering for an account on Memocom CRM! Before we get started, we just need to confirm that this is you. Click below to verify your email address.';
+    ? `We received a request to change the email address associated with your ${getEmailBrandName()} account. Click below to confirm this change.`
+    : `Thanks for registering for an account on ${getEmailBrandName()}! Before we get started, we just need to confirm that this is you. Click below to verify your email address.`;
   const ctaLabel = isEmailUpdate
     ? i18n._('Confirm new email')
     : i18n._('Verify Email');
