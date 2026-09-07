@@ -21,6 +21,16 @@ describe('applyBranding', () => {
     expect(document.title).toBe('Memocom CRM');
   });
 
+  it('recolours the interactive palette-blue alias, not the ramp or tags', () => {
+    applyBranding({ accent: '#F36F21' });
+
+    expect(rootStyle().getPropertyValue('--t-color-blue')).toBe('#F36F21');
+    expect(rootStyle().getPropertyValue('--t-background-transparent-blue')).toMatch(/^rgba\(/);
+    // The ramp and tag tokens stay untouched so user-picked "blue" stays blue.
+    expect(rootStyle().getPropertyValue('--t-color-blue5')).toBe('');
+    expect(rootStyle().getPropertyValue('--t-tag-background-blue')).toBe('');
+  });
+
   it('overrides the accent CSS variables the theme reads', () => {
     applyBranding({ accent: '#0B2C5F' });
 
