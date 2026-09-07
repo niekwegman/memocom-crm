@@ -177,6 +177,40 @@ upgrades stay auditable. Keep it updated: one section per change, newest first.
      object at mount and never re-reads the variables.
   2. `--t-accent-*` alone changes nothing visible; `--t-color-blue` is what
      recolours interactive elements.
+### feat: dark navigation chrome via BRAND_NAV_BACKGROUND
+
+- Commits: `8dea57df67`, `4452d8df62`, `d64faf4039` (2026-09-07)
+- `BRAND_NAV_BACKGROUND` (hex) paints the sidebar and page header in the
+  brand's dark colour while the content area stays light. Unset = standard
+  light chrome, so this is opt-in per deployment. First consumer: OptiFin
+  (`#0B2C5F`).
+- Mechanism: `applyBranding` sets `--t-brand-nav-bg` and adds a `.brand-nav`
+  class on `<html>`; `brand-nav.css` then redefines **design tokens locally**,
+  scoped to `.brand-nav-sidebar` / `.brand-nav-topbar` (two className hooks in
+  `NavigationDrawer.tsx` and `PageHeader.tsx`). Components inside keep reading
+  their own tokens and simply get dark-appropriate values there — no component
+  forking, and the content area is untouched. Values are translucent white
+  over the brand ground, so any hex works, not just navy.
+- **Overriding font tokens obliges you to override surface tokens too.** The
+  first deploy shipped white-on-white: the Home/Chat tab pill and the New-chat
+  button (`MainNavigationDrawerTabsRow`) paint themselves with
+  `background.secondary`, which stayed white while the scoped font tokens
+  turned their text white. If you add a token override here, grep the nav
+  components for sibling tokens in the same family before shipping.
+- **Container-scoped CSS variables cannot reach colours read through the JS
+  `theme` object.** This is the sharp edge of the whole approach: the theme
+  provider snapshots `getComputedStyle(documentElement)` — i.e. `:root`, not
+  your container — so anything doing `color={theme.font.color.tertiary}` in
+  JSX gets the LIGHT value regardless of what the scoped CSS says. Hit on the
+  two tab icons, which stayed dark grey on navy. Tabler renders that prop as a
+  `stroke` **presentation attribute**, and presentation attributes lose to any
+  CSS declaration, so restating `stroke` in CSS fixes it without `!important`.
+  Scope such rules narrowly (here: `[role='tablist']`) so deliberately
+  record-coloured icons keep their hues.
+- `TintedIconTile` (nav items with a record colour) computes its tint for a
+  light sidebar and reads as bright blobs on a dark one. It sets its colours
+  as **inline custom properties**, so the override needs `!important` — an
+  author rule with `!important` does outrank an inline declaration.
 - Known gap: the sign-in page's PRIMARY logo is still the baked-in Memocom
   "m" asset (from the rebrand commit below); a branded deployment shows its
   workspace logo only as the small secondary badge. Swap requires making that
