@@ -50,6 +50,18 @@
   color: var(--t-font-color-secondary);
 }
 
+/* PageCardHeader (record index / side panel header) paints itself with
+ * background.secondary and carries the same brand-nav-topbar hook as
+ * PageHeader. Its object icon comes from RecordIndexPageHeaderIcon, which —
+ * like the tab icons below — takes its colour as a JS prop read from the
+ * theme snapshot of :root, so the scoped variables never reach it. Tabler
+ * renders that as a `stroke` presentation attribute, which any CSS
+ * declaration outranks. Record-coloured icons keep their own hue because
+ * this is scoped to the header's own title area. */
+.brand-nav .brand-nav-topbar svg {
+  stroke: var(--t-font-color-secondary);
+}
+
 /* The Home/Chat tab icons are the exception: they receive their colour as a
  * JS prop read from the theme object, which is snapshotted from :root and so
  * never sees these scoped variables — they'd stay dark grey on navy. Tabler

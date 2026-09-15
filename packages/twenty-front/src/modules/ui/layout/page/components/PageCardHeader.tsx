@@ -104,7 +104,7 @@ export const PageCardHeader = ({
   );
 
   return (
-    <StyledHeader centerTitle={shouldCenterTitle}>
+    <StyledHeader className="brand-nav-topbar" centerTitle={shouldCenterTitle}>
       <StyledLeft>
         {!isMobile && !isNavigationDrawerExpanded && (
           <NavigationDrawerCollapseButton direction="right" />
