@@ -15,6 +15,24 @@ upgrades stay auditable. Keep it updated: one section per change, newest first.
 - Workspace apps (e.g. `memocom-app`, `optifin-finance-workspace`) live in
   separate repositories and are *not* part of this fork.
 
+## Upgrade log
+
+### 2026-11-22: rebase onto `twenty/v2.60.3` (from v2.36.0)
+
+- Rebased the 19 patches (conflicts only in the email verification template, sign-in `FooterNote`, `index.tsx`; upstream
+  deleted `DefaultWorkspaceName.ts`). The build workflow on the upgrade branch pushes only the sha tag, never `:latest`.
+- **Trap: an instance on exactly 2.36.0 cannot upgrade straight to 2.38+.** Upstream added the 2.36 command
+  `AddUsageLimitFastInstanceCommand` (1787821567133) to the `2-36` directory after the `v2.36.0` tag was cut; the upgrade
+  runner starts at 2.37 and skips it, so `2.38.0_ReshapeUsageLimitPeriodFastInstanceCommand` fails with
+  `relation "core.usageLimit" does not exist`. Fix: create the table first, then (re)run the upgrade:
+  the SQL is in `packages/twenty-server/src/database/commands/upgrade-version-command/2-36/2-36-instance-command-fast-1787821567133-add-usage-limit.ts`
+  (`CREATE TABLE "core"."usageLimit" ...` + the FK to `core.workspace`). The failed attempt stays in `core."upgradeMigration"`
+  as history; the retry is recorded as attempt 2.
+- Dry run (OptiFin dump, 43 MB, 1 workspace, restored into a throwaway postgres:16 + the sha image under amd64 emulation):
+  2.36.0 -> 2.60.0, 794 steps, row counts identical, clean restart. The entrypoint prints "Successfully migrated DB!" even
+  when the upgrade failed: always check `core."upgradeMigration"` for `failed` rows.
+- Image: `ghcr.io/niekwegman/memocom-crm:sha-8571539bd895aa31bf22b18932dc4cd09f002025` (amd64 only).
+
 ## Patch set
 
 ### fix(front): PageLayout widgets clip/stretch content instead of scrolling and packing at the top
