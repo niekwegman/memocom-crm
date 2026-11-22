@@ -28,6 +28,15 @@ upgrades stay auditable. Keep it updated: one section per change, newest first.
   the SQL is in `packages/twenty-server/src/database/commands/upgrade-version-command/2-36/2-36-instance-command-fast-1787821567133-add-usage-limit.ts`
   (`CREATE TABLE "core"."usageLimit" ...` + the FK to `core.workspace`). The failed attempt stays in `core."upgradeMigration"`
   as history; the retry is recorded as attempt 2.
+- **crmnext variant (workspace created fresh at 2.36 on 2026-10-15, its 2.36 workspace commands are `isInitial`):** the runner
+  DOES run `AddUsageLimit` first (so do NOT pre-create the table there: `relation "usageLimit" already exists`), and then aborts:
+  `Cannot run instance step: workspace <id> has not completed "2.36.0_BackfillWorkflowRunCoreIdsCommand_1787748136001" (cursor:
+  "2.36.0_AddUsageLimitFastInstanceCommand_1787821567133", status: "completed")`, because the runner also wrote a per-workspace
+  `upgradeMigration` row for `AddUsageLimit` that moves the workspace cursor off the barrier. Fix: delete that row
+  (`DELETE FROM core."upgradeMigration" WHERE name LIKE '2.36.0_AddUsageLimit%' AND "workspaceId" IS NOT NULL;`) and re-run
+  `yarn command:prod upgrade`. Dry run (crmnext dump, 7 MB): 2.36.0 -> 2.60.0, 673 rows, 0 failed, all 23 non-empty tables
+  identical; only the 3 empty workflow tables were dropped upstream; clean restart.
+  So: run the upgrade, read the error, apply the matching fix (OptiFin: create the table; crmnext: delete the stray row), re-run.
 - Dry run (OptiFin dump, 43 MB, 1 workspace, restored into a throwaway postgres:16 + the sha image under amd64 emulation):
   2.36.0 -> 2.60.0, 794 steps, row counts identical, clean restart. The entrypoint prints "Successfully migrated DB!" even
   when the upgrade failed: always check `core."upgradeMigration"` for `failed` rows.
